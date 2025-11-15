@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "build": "zig build -Doptimize=ReleaseSmall",
+    "build:debug": "zig build",
+    "run": "zig build run -Doptimize=ReleaseSmall",
+    "test": "./zig-out/bin/bunq tests/demo.js",
+    "test:bun": "./zig-out/bin/bunq tests/demo_bun.js"
+  }
+}
