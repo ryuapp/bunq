@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  CI:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
+      - name: Cache Zig
+        uses: actions/cache@v4
+        with:
+          path: |
+            .zig-cache
+          key: ${{ runner.os }}-zig-${{ hashFiles('build.zig.zon') }}
+          restore-keys: |
+            ${{ runner.os }}-zig-${{ hashFiles('build.zig.zon') }}
+            ${{ runner.os }}-zig-
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v2
+        with:
+          version: 0.15.2
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+      - name: Format
+        run: deno task format:check
+      - name: Build
+        run: deno task build
